@@ -49,20 +49,6 @@ Movie-Recommendation-System/
 └── tmdb_5000_*.csv            # Dataset files (required - not in repo)
 ```
 
-### Key Files Explained
-
-- **Untitled.ipynb**: Contains the complete data pipeline including:
-  - Data loading and preprocessing
-  - JSON parsing for genres, keywords, cast, and crew
-  - Feature engineering and metadata concatenation
-  - TF-IDF vectorization
-  - Cosine similarity computation
-  - Recommendation function examples
-  
-- **app.py**: Streamlit application providing:
-  - Interactive movie selection dropdown
-  - Movie poster display via TMDB API
-  - Top-5 recommendation display with visuals
 
 ## Quick Start
 
@@ -123,25 +109,6 @@ The app will open at `http://localhost:8501` where you can:
 
 **Note**: Add your TMDB API key to `app.py` line 17 for poster display, or use a placeholder key.
 
-## How It Works
-
-### Algorithm Overview
-
-```
-Input: Movie Title
-   ↓
-Extract movie metadata (genres, cast, keywords, overview)
-   ↓
-Combine features into single text document
-   ↓
-Apply TF-IDF Vectorization
-   ↓
-Compute Cosine Similarity with all movies
-   ↓
-Rank and return top-N similar movies
-   ↓
-Output: List of recommendations
-```
 
 ### Detailed Steps
 
@@ -167,52 +134,6 @@ Output: List of recommendations
    - For a query movie, retrieve its similarity scores
    - Return top-N movies with highest similarity scores
 
-## Example Usage
-
-### In Jupyter Notebook
-
-```python
-# After running all cells in the notebook
-
-# Get 5 recommendations for "Avatar"
-recommendations = get_recommendations("Avatar", top_n=5)
-print(recommendations)
-
-# Get 10 recommendations for another movie
-recommendations = get_recommendations("The Dark Knight", top_n=10)
-```
-
-### Via Streamlit Interface
-
-1. Start the app: `streamlit run app.py`
-2. Select a movie name from the dropdown
-3. Click the "Recommend" button
-4. View 5 recommendations with movie posters
-
-## Learning Objectives
-
-This project is useful for understanding:
-
-- **Data Cleaning**: Handling missing values and parsing JSON-formatted fields
-- **Feature Engineering**: Extracting and combining metadata into meaningful features
-- **Text Processing**: Tokenization, vectorization, and similarity computation
-- **Machine Learning Fundamentals**: Similarity-based recommendations without training data
-- **Data Science Workflow**: From raw data to production application
-
-## Future Enhancements
-
-- [ ] Add a `requirements.txt` with pinned versions
-- [ ] Implement collaborative filtering for comparison
-- [ ] Add user rating persistence and history tracking
-- [ ] Refactor notebook into reusable Python modules
-- [ ] Deploy to cloud platforms (Heroku, AWS, Google Cloud)
-- [ ] Add unit tests and CI/CD pipeline
-- [ ] Implement evaluation metrics (user feedback, ranking quality)
-- [ ] Add advanced features:
-  - Hybrid recommendations (content + collaborative)
-  - Time-decay factors for newer movies
-  - Personalization based on genres/cast preferences
-  - Export recommendations to lists
 
 ## Known Limitations
 
