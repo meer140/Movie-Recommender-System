@@ -1,141 +1,261 @@
 # Movie Recommendation System
 
-A content-based movie recommender implemented as a Jupyter Notebook using the TMDB 5000 dataset (movies + credits). This repository demonstrates how to extract and combine movie metadata (genres, keywords, top cast, director, and overview) to build a lightweight, explainable recommendation engine.
+A content-based movie recommender system that leverages metadata similarity to suggest films based on genres, cast, keywords, and plot descriptions. Built with Python and Jupyter Notebook using the TMDB 5000 Movie Dataset, with an interactive Streamlit web interface.
 
----
+## Overview
 
-## Table of Contents
-
-- [Why this project](#why-this-project)
-- [Features](#features)
-- [Dataset](#dataset)
-- [Prerequisites](#prerequisites)
-- [Quickstart](#quickstart)
-- [Notebook overview](#notebook-overview)
-- [How it works (high level)]
-- [Repository structure](#repository-structure)
-- [Extending the project](#extending-the-project)
-- [License & attribution](#license--attribution)
-
----
-
-## Why this project
-
-This repository is an educational implementation of a content-based movie recommender. It is useful for learning the following concepts:
-
-- Basic data cleaning and JSON parsing in pandas
-- Feature engineering from structured metadata
-- Text vectorization (Count/Tf-idf) and similarity computation
-- Building an explainable recommender that uses metadata signals (genres, cast, director, keywords)
-
-It is intentionally lightweight and suitable for small-to-medium datasets and experimentation.
+This project demonstrates practical machine learning and data engineering concepts through an explainable recommendation engine. It processes 5,000 movies from the TMDB dataset, extracts meaningful features, and computes similarity scores to provide personalized movie recommendations without relying on user history.
 
 ## Features
 
-- Parse and merge TMDB movies and credits CSVs
-- Extract genres, keywords, top cast members, and director from JSON-like columns
-- Build a combined "metadata" text field per movie
-- Vectorize metadata and compute cosine similarity
-- Lookup by movie title and return top-N similar movies
+- **Content-Based Filtering**: Recommendations based on genres, cast, crew, keywords, and plot overview
+- **Feature Engineering**: Intelligent parsing and extraction from JSON-structured metadata
+- **Text Vectorization**: TF-IDF and cosine similarity computation for robust similarity matching
+- **Interactive UI**: Streamlit web application for easy movie exploration
+- **Scalable Design**: Precomputed similarity matrices for fast lookups
+
+## Technology Stack
+
+- **Language**: Python 3.8+, Jupyter Notebook
+- **Libraries**: 
+  - `pandas` - Data manipulation and analysis
+  - `scikit-learn` - Text vectorization and similarity computation
+  - `streamlit` - Interactive web interface
+  - `numpy` - Numerical operations
+  - `requests` - API integration for movie posters
 
 ## Dataset
 
-This project expects the TMDB 5000 Movie Dataset CSVs in the notebook working directory:
+This project uses the **TMDB 5000 Movie Dataset**, which includes:
 
-- `tmdb_5000_movies.csv`
-- `tmdb_5000_credits.csv`
+- `tmdb_5000_movies.csv` - Movie metadata (genres, keywords, budget, revenue, ratings, etc.)
+- `tmdb_5000_credits.csv` - Cast and crew information
 
-These files are commonly available from public data sources such as Kaggle (search for "TMDB 5000 Movie Dataset"). Place both files in the same directory as the notebook before running the notebook.
+**Source**: Available on [Kaggle](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata)
 
-## Prerequisites
+### Data License
 
-- Python 3.8+ (recommended)
-- Jupyter Notebook or JupyterLab
+The TMDB dataset is provided by The Movie Database (TMDB) and is subject to their terms of use. Please review the [TMDB API Terms of Service](https://www.themoviedb.org/settings/api) before using this data.
 
-Typical Python packages used in the notebook (install into a virtual environment):
+## Project Structure
 
-pip install -r requirements.txt
+```
+Movie-Recommendation-System/
+├── README.md                    # This file
+├── Untitled.ipynb              # Core recommendation engine (Jupyter Notebook)
+├── app.py                      # Streamlit web application
+├── movies.pkl                  # Preprocessed movies dataframe (generated)
+├── similarity.pkl              # Precomputed similarity matrix (generated)
+└── tmdb_5000_*.csv            # Dataset files (required - not in repo)
+```
 
-If you don't have a requirements file, you can install the essentials directly:
+### Key Files Explained
 
-pip install pandas numpy scikit-learn jupyter
+- **Untitled.ipynb**: Contains the complete data pipeline including:
+  - Data loading and preprocessing
+  - JSON parsing for genres, keywords, cast, and crew
+  - Feature engineering and metadata concatenation
+  - TF-IDF vectorization
+  - Cosine similarity computation
+  - Recommendation function examples
+  
+- **app.py**: Streamlit application providing:
+  - Interactive movie selection dropdown
+  - Movie poster display via TMDB API
+  - Top-5 recommendation display with visuals
 
-(If you add a requirements.txt to the repo, update this section to reference it.)
+## Quick Start
 
-## Quickstart
+### Prerequisites
 
-1. Clone the repository:
+- Python 3.8 or higher
+- pip package manager
+- TMDB API Key (optional, for poster display in the web app)
 
+### Installation
+
+1. **Clone the repository**:
+   ```bash
    git clone https://github.com/meer140/Movie-Recommendation-System.git
    cd Movie-Recommendation-System
+   ```
 
-2. Make sure the dataset CSVs (`tmdb_5000_movies.csv` and `tmdb_5000_credits.csv`) are in the repository root (or the notebook working directory).
-
-3. Start Jupyter and open the notebook:
-
-   jupyter notebook
+2. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
    
-   Open `Untitled.ipynb` and run the cells in order.
+   Or manually install:
+   ```bash
+   pip install pandas numpy scikit-learn jupyter streamlit requests
+   ```
 
-4. Explore the example usage cells. The notebook exposes the recommendation lookup (for example, `get_recommendations(title, top_n)`) which returns the most similar movies for a given title.
+3. **Download the dataset**:
+   - Visit [Kaggle TMDB Dataset](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata)
+   - Download `tmdb_5000_movies.csv` and `tmdb_5000_credits.csv`
+   - Place both files in the repository root directory
 
-## Notebook overview
+### Running the Jupyter Notebook
 
-The included Jupyter Notebook (`Untitled.ipynb`) contains the following sections:
+```bash
+jupyter notebook Untitled.ipynb
+```
 
-- Data loading and inspection
-- Parsing JSON-like columns (`genres`, `keywords`, `cast`, `crew`) and extracting desired fields
-- Cleaning and transforming metadata
-- Combining features into a single metadata string
-- Vectorization (CountVectorizer or TfidfVectorizer)
-- Cosine similarity computation
-- Example lookups and evaluation/demonstration cells
+Execute cells in order:
+1. Data loading and merging
+2. JSON parsing (genres, keywords, cast, crew)
+3. Feature preprocessing
+4. Vectorization (CountVectorizer or TfidfVectorizer)
+5. Similarity matrix computation
+6. Test recommendations using `get_recommendations(title, top_n)`
 
-If you rename the notebook, please update references in this README accordingly.
+### Running the Streamlit App
 
-## How it works (high level)
+First, ensure the notebook has been run to generate `movies.pkl` and `similarity.pkl`.
 
-1. Load the CSV files and merge the credits into the movies dataframe.
-2. Select and parse relevant columns: `movie_id`, `title`, `overview`, `genres`, `keywords`, `cast`, `crew`.
-3. Extract structured fields from JSON-like strings (e.g., genre names, top 3 cast members, director).
-4. Preprocess text:
-   - Lowercase and normalize tokens
-   - Optionally remove stop words and punctuation
-   - Flatten lists into space-separated tokens
-5. Concatenate fields into a single metadata string for each movie (e.g., `genres keywords cast director overview`).
-6. Vectorize the metadata using `CountVectorizer` or `TfidfVectorizer`.
-7. Compute cosine similarity between movie vectors.
-8. Given a movie title, retrieve its index and return the top-N most similar movies by similarity score.
+```bash
+streamlit run app.py
+```
 
-## Repository structure
+The app will open at `http://localhost:8501` where you can:
+1. Select a movie from the dropdown
+2. Click "Recommend" to see 5 similar movies with posters
 
-- Untitled.ipynb — primary Jupyter Notebook with the full implementation and examples
-- README.md — this file
+**Note**: Add your TMDB API key to `app.py` line 17 for poster display, or use a placeholder key.
 
-(You may add `requirements.txt`, example scripts, or a small web app (Flask/Streamlit) to make recommendations accessible outside the notebook.)
+## How It Works
 
-## Extending the project
+### Algorithm Overview
 
-Ideas to make this repository production-ready or more feature-rich:
+```
+Input: Movie Title
+   ↓
+Extract movie metadata (genres, cast, keywords, overview)
+   ↓
+Combine features into single text document
+   ↓
+Apply TF-IDF Vectorization
+   ↓
+Compute Cosine Similarity with all movies
+   ↓
+Rank and return top-N similar movies
+   ↓
+Output: List of recommendations
+```
 
-- Add a `requirements.txt` and a reproducible environment (poetry / pipenv)
-- Refactor notebook code into Python modules (e.g., `recommender/` package) and provide CLI or API endpoints
-- Persist precomputed vectors and similarity matrices for faster lookups
-- Add tests and CI for preprocessing and recommendation functions
-- Add evaluation (e.g., human-annotated similarity or proxy metrics)
-- Build a simple web UI using Streamlit or Flask to demo recommendations interactively
+### Detailed Steps
 
-## License & attribution
+1. **Data Preparation**:
+   - Load and merge movies and credits CSVs
+   - Extract structured data from JSON columns
+   - Select top 3 cast members and director(s)
 
-This repository is provided for educational purposes. If you add a license, include it in the repo root (e.g., `LICENSE`).
+2. **Feature Engineering**:
+   - Parse genres, keywords, cast, crew from JSON strings
+   - Normalize and lowercase all text
+   - Concatenate features: `genres + keywords + cast + director + overview`
 
-Dataset attribution: The recommendation pipeline uses the TMDB 5000 Movie Dataset (movies + credits). Please follow the dataset provider's terms (e.g., Kaggle / TMDB) when redistributing or publishing derived data.
+3. **Vectorization**:
+   - Convert text to numerical vectors using TF-IDF
+   - Each movie represented as a high-dimensional vector
+
+4. **Similarity Computation**:
+   - Calculate cosine similarity between movie vectors
+   - Store precomputed similarity matrix for fast lookups
+
+5. **Recommendation**:
+   - For a query movie, retrieve its similarity scores
+   - Return top-N movies with highest similarity scores
+
+## Example Usage
+
+### In Jupyter Notebook
+
+```python
+# After running all cells in the notebook
+
+# Get 5 recommendations for "Avatar"
+recommendations = get_recommendations("Avatar", top_n=5)
+print(recommendations)
+
+# Get 10 recommendations for another movie
+recommendations = get_recommendations("The Dark Knight", top_n=10)
+```
+
+### Via Streamlit Interface
+
+1. Start the app: `streamlit run app.py`
+2. Select a movie name from the dropdown
+3. Click the "Recommend" button
+4. View 5 recommendations with movie posters
+
+## Learning Objectives
+
+This project is useful for understanding:
+
+- **Data Cleaning**: Handling missing values and parsing JSON-formatted fields
+- **Feature Engineering**: Extracting and combining metadata into meaningful features
+- **Text Processing**: Tokenization, vectorization, and similarity computation
+- **Machine Learning Fundamentals**: Similarity-based recommendations without training data
+- **Data Science Workflow**: From raw data to production application
+
+## Future Enhancements
+
+- [ ] Add a `requirements.txt` with pinned versions
+- [ ] Implement collaborative filtering for comparison
+- [ ] Add user rating persistence and history tracking
+- [ ] Refactor notebook into reusable Python modules
+- [ ] Deploy to cloud platforms (Heroku, AWS, Google Cloud)
+- [ ] Add unit tests and CI/CD pipeline
+- [ ] Implement evaluation metrics (user feedback, ranking quality)
+- [ ] Add advanced features:
+  - Hybrid recommendations (content + collaborative)
+  - Time-decay factors for newer movies
+  - Personalization based on genres/cast preferences
+  - Export recommendations to lists
+
+## Known Limitations
+
+- **Content-Based Only**: Cannot recommend movies without similar metadata
+- **Cold Start Problem**: Applies to new movies with limited metadata
+- **Static Model**: Similarity matrix must be recomputed if dataset updates
+- **Text Similarity**: May miss nuanced thematic connections not captured in metadata
+
+## Contributing
+
+Contributions are welcome! Please consider:
+
+- Improving feature engineering techniques
+- Adding collaborative filtering
+- Enhancing the web interface
+- Writing unit tests
+- Optimizing performance
+- Fixing bugs or typos
+
+## License
+
+This project is provided for **educational purposes**. 
+
+**Dataset Attribution**: 
+- The TMDB 5000 Movie Dataset is provided by [The Movie Database (TMDB)](https://www.themoviedb.org/)
+- Poster images are sourced from TMDB's API
+- Please comply with [TMDB's Terms of Use](https://www.themoviedb.org/settings/api) when redistributing or publishing results
+
+## Acknowledgments
+
+- [The Movie Database (TMDB)](https://www.themoviedb.org/) for the dataset
+- [Kaggle](https://www.kaggle.com/) for hosting and distribution
+- scikit-learn for ML utilities
+- Streamlit for the web framework
+
+## Support & Questions
+
+For questions or issues:
+- Open an GitHub issue in this repository
+- Check the notebook comments for detailed explanations
+- Review the Streamlit documentation for app customization
 
 ---
 
-If you'd like, I can also:
-
-- Add a `requirements.txt` with the exact packages used in the notebook
-- Rename and clean the notebook contents and refactor code into a script/module
-- Add a small Streamlit app that exposes the recommendation function
-
+**Last Updated**: July 2026  
+**Status**: Active - Educational Project
